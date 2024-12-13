@@ -4,9 +4,9 @@ import { FaCodeFork } from "react-icons/fa6";
 import { formatDate } from "../utils/functions.js";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
 const Repo = ({ repo }) => {
   const formattedDate = formatDate(repo.created_at);
-
   const [languages, setLanguages] = useState([]);
 
   // Fetch the languages of the repository
@@ -23,7 +23,8 @@ const Repo = ({ repo }) => {
 
     fetchLanguages();
   }, [repo.languages_url]);
-  //Onclick clone
+
+  // Onclick clone
   const handleCloneClick = async (repo) => {
     try {
       await navigator.clipboard.writeText(repo.clone_url);
@@ -32,11 +33,12 @@ const Repo = ({ repo }) => {
       toast.error(error.message);
     }
   };
+
   return (
     <li className="mb-10 ms-7">
       <span
         className="absolute flex items-center justify-center w-6 h-6 bg-blue-100
-			rounded-full -start-3 ring-8 ring-white"
+        rounded-full -start-3 ring-8 ring-white"
       >
         <FaCodeBranch className="w-5 h-5 text-blue-800" />
       </span>
@@ -51,20 +53,20 @@ const Repo = ({ repo }) => {
         </a>
         <span
           className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5
-					py-0.5 rounded-full flex items-center gap-1"
+          py-0.5 rounded-full flex items-center gap-1"
         >
           <FaRegStar /> {repo.stargazers_count}
         </span>
         <span
           className="bg-purple-100 text-purple-800 text-xs font-medium
-					 px-2.5 py-0.5 rounded-full flex items-center gap-1"
+          px-2.5 py-0.5 rounded-full flex items-center gap-1"
         >
           <FaCodeFork /> {repo.fork_count}
         </span>
         <span
           onClick={() => handleCloneClick(repo)}
           className="cursor-pointer bg-green-100 text-green-800 text-xs
-					font-medium px-2.5 py-0.5 rounded-full flex items-center gap-1"
+          font-medium px-2.5 py-0.5 rounded-full flex items-center gap-1"
         >
           <FaCopy /> Clone
         </span>
@@ -72,7 +74,7 @@ const Repo = ({ repo }) => {
 
       <time
         className="block my-1 text-xs font-normal leading-none
-			 text-gray-400"
+        text-gray-400"
       >
         Released on {formattedDate}
       </time>
@@ -83,14 +85,18 @@ const Repo = ({ repo }) => {
       </p>
       {/* Displaying languages used in the repo */}
       <div className="mb-4 text-base font-normal text-gray-500">
-        {languages.length > 0
-          ? `Languages: ` +
-            languages.map((lang, index) => (
-              <span key={index} className="text-green-500 font-semibold mr-1">
-                {lang}
+        {languages.length > 0 ? (
+          <>
+            Languages:{" "}
+            {languages.map((lang, index) => (
+              <span key={index} className="text-green-500  mr-1">
+                {lang},
               </span>
-            ))
-          : "No languages specified"}
+            ))}
+          </>
+        ) : (
+          "No languages specified"
+        )}
       </div>
     </li>
   );
