@@ -3,6 +3,7 @@ import { FaCodeFork } from "react-icons/fa6";
 
 import { formatDate } from "../utils/functions.js";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 const Repo = ({ repo }) => {
   const formattedDate = formatDate(repo.created_at);
 
@@ -22,7 +23,15 @@ const Repo = ({ repo }) => {
 
     fetchLanguages();
   }, [repo.languages_url]);
-
+  //Onclick clone
+  const handleCloneClick = async (repo) => {
+    try {
+      await navigator.clipboard.writeText(repo.clone_url);
+      toast.success("URL Copied!");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   return (
     <li className="mb-10 ms-7">
       <span
@@ -53,6 +62,7 @@ const Repo = ({ repo }) => {
           <FaCodeFork /> {repo.fork_count}
         </span>
         <span
+          onClick={() => handleCloneClick(repo)}
           className="cursor-pointer bg-green-100 text-green-800 text-xs
 					font-medium px-2.5 py-0.5 rounded-full flex items-center gap-1"
         >
