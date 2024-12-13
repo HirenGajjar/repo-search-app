@@ -47,10 +47,27 @@ function HomePage() {
     setRepos(repos);
     setLoading(false);
   };
+  //Sort functionality
+  const onSort = async (sorType) => {
+    if (sorType === "recent") {
+      //This is set to descending order or latest first
+      repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+    if (sorType === "stars") {
+      repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+    }
+
+    if (sorType === "forks") {
+      repos.sort((a, b) => b.forks_count - a.forks_count);
+    }
+
+    setSortType(sorType);
+    setRepos([...repos]);
+  };
   return (
     <div className="m-4">
       <Search handleSearchSubmit={handleSearchSubmit} />
-      <SortRepos />
+      {repos.length > 0 && <SortRepos sortType={sortType} onSort={onSort} />}
       <div className="flex gap-4 flex-col lg:flex-row justify-center items-start">
         {userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
         {!loading && <Repos repos={repos} />}
