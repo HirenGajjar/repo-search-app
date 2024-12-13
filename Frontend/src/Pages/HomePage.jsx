@@ -39,9 +39,8 @@ function HomePage() {
       <Search />
       <SortRepos />
       <div className="flex gap-4 flex-col lg:flex-row justify-center items-start">
-        <ProfileInfo userProfile={userProfile} />
-
-        <Repos />
+        {userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
+        {repos.length > 0 && !loading && <Repos repos={repos} />}
         {loading && <Spinner />}
       </div>
     </div>

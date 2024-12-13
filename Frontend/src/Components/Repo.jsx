@@ -1,11 +1,28 @@
 import { FaCodeBranch, FaCopy, FaRegStar } from "react-icons/fa";
 import { FaCodeFork } from "react-icons/fa6";
-import { FaJava } from "react-icons/fa";
-import { FaPython } from "react-icons/fa";
-import { TbBrandCpp } from "react-icons/tb";
-import { SiTypescript } from "react-icons/si";
-import { IoLogoJavascript } from "react-icons/io5";
-const Repo = () => {
+
+import { formatDate } from "../utils/functions.js";
+import { useEffect, useState } from "react";
+const Repo = ({ repo }) => {
+  const formattedDate = formatDate(repo.created_at);
+
+  const [languages, setLanguages] = useState([]);
+
+  // Fetch the languages of the repository
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      try {
+        const response = await fetch(repo.languages_url);
+        const languagesData = await response.json();
+        setLanguages(Object.keys(languagesData)); // Get an array of language names
+      } catch (error) {
+        console.error("Error fetching languages:", error);
+      }
+    };
+
+    fetchLanguages();
+  }, [repo.languages_url]);
+
   return (
     <li className="mb-10 ms-7">
       <span
@@ -16,24 +33,24 @@ const Repo = () => {
       </span>
       <div className="flex gap-2 items-center flex-wrap">
         <a
-          href={"https://github.com/burakorkmez/mern-chat-app"}
+          href={repo.html_url}
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-2 text-lg font-semibold"
         >
-          mern-chat-app
+          {repo.name}
         </a>
         <span
           className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5
 					py-0.5 rounded-full flex items-center gap-1"
         >
-          <FaRegStar /> 167
+          <FaRegStar /> {repo.stargazers_count}
         </span>
         <span
           className="bg-purple-100 text-purple-800 text-xs font-medium
 					 px-2.5 py-0.5 rounded-full flex items-center gap-1"
         >
-          <FaCodeFork /> 25
+          <FaCodeFork /> {repo.fork_count}
         </span>
         <span
           className="cursor-pointer bg-green-100 text-green-800 text-xs
@@ -47,13 +64,24 @@ const Repo = () => {
         className="block my-1 text-xs font-normal leading-none
 			 text-gray-400"
       >
-        Released on Jan 1, 2021
+        Released on {formattedDate}
       </time>
       <p className="mb-4 text-base font-normal text-gray-500">
-        Real Time Chat App | MERN && Socket.io && JWT
+        {repo.description
+          ? repo.description.slice(0, 200)
+          : "No Description Available."}
       </p>
-
-      <IoLogoJavascript size={30} />
+      {/* Displaying languages used in the repo */}
+      <div className="mb-4 text-base font-normal text-gray-500">
+        {languages.length > 0
+          ? `Languages: ` +
+            languages.map((lang, index) => (
+              <span key={index} className="text-green-500 font-semibold mr-1">
+                {lang}
+              </span>
+            ))
+          : "No languages specified"}
+      </div>
     </li>
   );
 };
